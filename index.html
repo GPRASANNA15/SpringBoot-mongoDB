@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Registration form</title>
+</head>
+<style>
+    div {
+        background-color: lightblue;
+        width: 200px;
+        padding: 100px;
+        margin: 0 auto;
+    }
+
+    button {
+        background-color: white;
+        border-color: white;
+        box-shadow: 0 2px 8px;
+        display: block;
+        margin: 10px auto;
+    }
+
+    #byId {
+        display: none;
+        width:400px;
+    }
+
+    #result {
+        display: none;
+        background-color: white;
+    }
+
+    #outer {
+        background-color: lightblue;
+        padding: 10px;
+        width: 400px;
+        display: none;
+    }
+    #getresult{
+        background-color: white;
+        display: none;
+        width:200px;
+    }
+</style>
+
+<body>
+    <form>
+        <div>
+            <label>Enter the Name:</label>
+            <input id="name" type="text">
+            <br><br>
+            <label>Enter the Email:</label>
+            <input id="email" type="email">
+            <br><br>
+            <label>Enter the Location:</label>
+            <input type="text" id="location">
+            <br><br>
+            <button type="button" onclick="handleRegister()">Register</button>
+            <button type="button" onclick="handleClick()">Show All</button>
+        </div>
+    </form>
+    <button id="button">Get By Id</button><br><br>
+    <div id="byId">
+        <label>Enter the ID:</label>
+        <br><br>
+        <input id="id" type="text">
+        <br><br>
+        <button type="button" onclick="ById()">Show</button>
+        <div id="getresult"></div>
+    </div>
+    <div id="outer">
+        <div id="result"></div>
+    </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    let b = document.getElementById("button");
+    let box = document.getElementById("byId");
+    b.addEventListener("click", () => {
+        box.style.display = "block";
+    });
+     let div=document.getElementById("getresult");
+   async function ById() {
+       div.style.display="block";
+        let id=document.getElementById("id").value;
+         let response= await axios.get(`http://localhost:8080/employees/display/${id}`);
+         let details=response.data;
+        let p=document.createElement("p");
+        let p1=document.createElement("p");
+        let p2=document.createElement("p");
+        p.textContent="Name:"+details.employeeName;
+        p1.textContent="Email:"+details.employeeEmail;
+        p2.textContent="Location:"+details.location;
+        div.appendChild(p);
+        div.appendChild(p1);
+        div.appendChild(p2);     
+
+    }
+    async function handleRegister() {
+        let name = document.getElementById("name").value;
+        let email = document.getElementById("email").value;
+        let location = document.getElementById("location").value;
+
+        let employees = { employeeName: name, employeeEmail: email, location: location };
+
+        let response = await axios.post("http://localhost:8080/employees", employees);
+        alert("Employee saved Successfully" + response.data);
+    }
+    async function handleClick() {
+        let box = document.getElementById("result");
+        box.style.display = "block";
+        box.innerText = "";
+        let box1 = document.getElementById("outer");
+        box1.style.display = "block";
+        let response = await axios.get("http://localhost:8080/employees/displayAll");
+        let emps = response.data;
+        emps.forEach(element => {
+            let id=document.createElement("p");
+            id.textContent="id:"+element.id;
+            let p1 = document.createElement("p");
+            p1.textContent = "name:" + element.employeeName;
+            let p2 = document.createElement("p");
+            p2.textContent = "email:" + element.employeeEmail;
+            let p3 = document.createElement("p");
+            p3.textContent = "location:" + element.location;
+            let hr = document.createElement("hr");
+            box.appendChild(p1);
+            box.appendChild(p2);
+            box.appendChild(p3);
+            box.appendChild(hr);
+        });
+    }
+</script>
+</html>
