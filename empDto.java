@@ -9,8 +9,6 @@ import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 public class empDto {
     private String id;
 
@@ -54,3 +52,4 @@ public class empDto {
         this.location = location;
     }
 }
+
